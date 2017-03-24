@@ -22,12 +22,13 @@ public class BestEducation
       int highestNumber = ReadIntRow()[0];
 
       var allPrimes = AllPrimeNumbers(highestNumber);
+      var allPrimePermutations = AllPermutations(allPrimes, highestNumber/2);
 
       var firstNumberWithMaximalFactors = 0;
       var maximalFactors = 0;
       for (int currentNum = 2; currentNum <= highestNumber; currentNum++)
       {
-        var currentNumFactorsCount = CountFactors(currentNum, allPrimes);
+				var currentNumFactorsCount = CountFactors(currentNum, allPrimePermutations);
 
         if (maximalFactors < currentNumFactorsCount)
         {
@@ -51,15 +52,18 @@ public class BestEducation
       if (number == 1)
         return 1;
 
-      var factors = 2; // always include 1 and self
-      int possibleFactor = 2;
-      for(; possibleFactor < Math.Sqrt(number); possibleFactor++)
+      int factors = 2; // always include 1 and self
+      double sqrtOfMax = Math.Sqrt(number);
+      var possibleFactors = knownPrimeNumbers.TakeWhile(possibleFactor => possibleFactor < sqrtOfMax);
+
+      foreach(int possibleFactor in possibleFactors)
       {
         if(number % possibleFactor == 0)
           factors += 2;
       }
 
-      if(possibleFactor*possibleFactor == number)
+      int intSqrtOfMax = (int)sqrtOfMax;
+			if (intSqrtOfMax * intSqrtOfMax == number)
         factors += 1;
 
 			return factors;
@@ -77,6 +81,35 @@ public class BestEducation
       }
 
       return result;
+    }
+
+    private List<int> AllPermutations(List<int> allPrimes, int valueLimit)
+    {
+      var result = new HashSet<int>(allPrimes);
+
+      foreach (int item1 in allPrimes)
+      {
+        // get all powers that are less than valueLimit
+        int pow = 2;
+        int powered = (int)Math.Pow(item1, pow);
+
+        while(powered < valueLimit)
+        {
+          result.Add(powered);
+          pow++;
+          powered = (int)Math.Pow(item1, pow);
+        }
+
+        foreach (int item2 in allPrimes.Where(num => num > item1))
+				{
+					var permutation = item1 * item2;
+					if (permutation > valueLimit)
+						continue;
+
+          result.Add(permutation);
+				}
+      }
+      return result.ToList();
     }
   }
 
