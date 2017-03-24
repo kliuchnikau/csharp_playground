@@ -32,10 +32,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test.cs" />
-    <Compile Include="Solutions\Test1-6.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Solutions\Test1-6.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\csharp\csharp.csproj">

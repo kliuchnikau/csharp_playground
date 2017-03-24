@@ -6,60 +6,39 @@ using System.Text.RegularExpressions;
 
 public class BestEducation
 {
-  public struct Coordinates
-  {
-    public double x;
-    public double y;
-  }
-
   public class Solution
   {
     private TextReader input;
     private TextWriter output;
 
-    private List<Tuple<int, string>> blockInfo;
-    private Dictionary<Char, Coordinates> symbolToCoords;
-
     public Solution(TextReader input, TextWriter output)
     {
       this.input = input;
       this.output = output;
-
-      this.symbolToCoords = new Dictionary<Char, Coordinates>();
-      this.blockInfo = new List<Tuple<int,string>>();
     }
 
     public void Solve()
     {
-      var matrixParams = ReadIntRow();
-      int matrixWidth = matrixParams[0];
-      int matrixHeight = matrixParams[1];
+      int highestNumber = ReadIntRow()[0];
 
-      for (int heightI = matrixHeight; heightI > 0; heightI--)
+      var allPrimes = AllPrimeNumbers(highestNumber);
+
+      var firstNumberWithMaximalFactors = 0;
+      var maximalFactors = 0;
+      for (int currentNum = 2; currentNum <= highestNumber; currentNum++)
       {
-        var currentRow = ReadString();
-        for (int widthI = 1; widthI <= matrixWidth; widthI++)
+        var currentNumFactorsCount = CountFactors(currentNum, allPrimes);
+
+        if (maximalFactors < currentNumFactorsCount)
         {
-          char symbolValue = currentRow[widthI-1];
-          symbolToCoords[symbolValue] = new Coordinates { x = widthI, y = heightI };
+          firstNumberWithMaximalFactors = currentNum;
+          maximalFactors = currentNumFactorsCount;
         }
       }
 
-      for (int i = 0; i < 3; i++)
-      {
-        ProcessBlock();
-      }
+      var howManyTests = highestNumber - firstNumberWithMaximalFactors + 1;
 
-      var bestCodeBlock = blockInfo[0];
-      for (int i = 1; i < blockInfo.Count(); i++)
-      {
-        var currentBlock = blockInfo[i];
-        if (currentBlock.Item1 < bestCodeBlock.Item1)
-          bestCodeBlock = currentBlock;
-      }
-
-      output.WriteLine(bestCodeBlock.Item2);
-      output.WriteLine(bestCodeBlock.Item1);
+			output.WriteLine(howManyTests);
     }
 
     private int[] ReadIntRow()
@@ -67,59 +46,37 @@ public class BestEducation
       return input.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
     }
 
-    private string ReadString()
+    private int CountFactors(int number, List<int> knownPrimeNumbers)
     {
-      return input.ReadLine();
-    }
+      if (number == 1)
+        return 1;
 
-    private void ProcessBlock()
-    {
-      var languageName = ReadString();
-      ReadString(); // %TEMPLATE-START%
-
-      string fullTemplate = "";
-      var currentLine = ReadString();
-      while (currentLine != "%TEMPLATE-END%")
+      var factors = 2; // always include 1 and self
+      int possibleFactor = 2;
+      for(; possibleFactor < Math.Sqrt(number); possibleFactor++)
       {
-        fullTemplate += currentLine;
-
-        currentLine = ReadString();
+        if(number % possibleFactor == 0)
+          factors += 2;
       }
 
-      var timeToType = CountTimeToTypeTemplate(fullTemplate);
+      if(possibleFactor*possibleFactor == number)
+        factors += 1;
 
-      blockInfo.Add(new Tuple<int, string>(timeToType, languageName));
+			return factors;
     }
 
-    private int CountTimeToTypeTemplate(string fullTemplate)
+    private List<int> AllPrimeNumbers(int maxNumber)
     {
-      var timeToType = 0;
+			var result = new List<int>();
 
-      var acceptableChars = fullTemplate.Where((char arg) => 32 < (int)arg && (int)arg <= 126).ToArray();
-
-      for (int charIdx = 1; charIdx < acceptableChars.Length; charIdx++)
+      int checkLimit = (int)Math.Round( Math.Sqrt(maxNumber), 0);
+      for (int currentNum = 2; currentNum <= checkLimit; currentNum++)
       {
-        char previousChar = acceptableChars[charIdx-1];
-        char currentChar = acceptableChars[charIdx];
-
-        timeToType += DistanceBetween(previousChar, currentChar);
-
-        previousChar = currentChar;
+        if (CountFactors(currentNum, result) == 2)
+          result.Add(currentNum);
       }
 
-      return timeToType;
-    }
-
-    private int DistanceBetween(char previousChar, char currentChar)
-    {
-      if (!symbolToCoords.ContainsKey(previousChar) || !symbolToCoords.ContainsKey(currentChar))
-      {
-        Console.WriteLine("alarm");
-      }
-      var coordPrev = symbolToCoords[previousChar];
-      var coordCurr = symbolToCoords[currentChar];
-
-      return (int)Math.Max(Math.Abs(coordPrev.x - coordCurr.x), Math.Abs(coordPrev.y - coordCurr.y));
+      return result;
     }
   }
 
