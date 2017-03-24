@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 public class BestEducation
 {
@@ -21,38 +22,33 @@ public class BestEducation
       for (int highestNumber = 20160; highestNumber < 20200; highestNumber++)
       {
         //int highestNumber = ReadIntRow()[0];
-        var howManyTests = Calculate(highestNumber);
+        int checkLimit = (int)Math.Round(Math.Sqrt(highestNumber), 0);
 
-				int controlValue = new BestEducation2.Solution().Solve(highestNumber);
-				if (controlValue != howManyTests)
-					throw new NotImplementedException();
-        
-        output.WriteLine(howManyTests);
+				var allPrimes = AllPrimeNumbers(checkLimit);
+				var allPrimePermutations = AllPermutations(allPrimes, checkLimit);
+
+        var firstNumberWithMaximalFactors = 0;
+        var maximalFactors = 0;
+        for (int currentNum = 20160; currentNum <= highestNumber; currentNum++)
+        {
+          var currentNumFactorsCount = CountFactors(currentNum, allPrimePermutations);
+
+          if (maximalFactors < currentNumFactorsCount)
+          {
+            firstNumberWithMaximalFactors = currentNum;
+            maximalFactors = currentNumFactorsCount;
+          }
+        }
+
+        var howManyTests = highestNumber - firstNumberWithMaximalFactors + 1;
+
+        int controlValue = new BestEducation2.Solution().Solve(highestNumber);
+        if (controlValue != howManyTests)
+          throw new NotImplementedException();
+
+        output.WriteLine(highestNumber);
+        //output.WriteLine(howManyTests);
       }
-    }
-
-    public int Calculate(int highestNumber)
-    {
-			int checkLimit = (int)Math.Round(Math.Sqrt(highestNumber), 0);
-
-			var allPrimes = AllPrimeNumbers(checkLimit);
-			var allPrimePermutations = AllPermutations(allPrimes, checkLimit);
-
-			var firstNumberWithMaximalFactors = 0;
-			var maximalFactors = 0;
-			for (int currentNum = 20160; currentNum <= highestNumber; currentNum++)
-			{
-				var currentNumFactorsCount = CountFactors(currentNum, allPrimePermutations);
-
-				if (maximalFactors < currentNumFactorsCount)
-				{
-					firstNumberWithMaximalFactors = currentNum;
-					maximalFactors = currentNumFactorsCount;
-				}
-			}
-
-			var howManyTests = highestNumber - firstNumberWithMaximalFactors + 1;
-      return howManyTests;
     }
 
     private int[] ReadIntRow()
@@ -69,22 +65,22 @@ public class BestEducation
       double sqrtOfMax = Math.Sqrt(number);
       var possibleFactors = knownPrimeNumbers.TakeWhile(possibleFactor => possibleFactor < sqrtOfMax);
 
-      foreach (int possibleFactor in possibleFactors)
+      foreach(int possibleFactor in possibleFactors)
       {
-        if (number % possibleFactor == 0)
+        if(number % possibleFactor == 0)
           factors += 2;
       }
 
       int intSqrtOfMax = (int)sqrtOfMax;
-      if (intSqrtOfMax * intSqrtOfMax == number)
+			if (intSqrtOfMax * intSqrtOfMax == number)
         factors += 1;
 
-      return factors;
+			return factors;
     }
 
-    private List<int> AllPrimeNumbers(int checkLimit)
+		private List<int> AllPrimeNumbers(int checkLimit)
     {
-      var result = new List<int>();
+			var result = new List<int>();
 
       for (int currentNum = 2; currentNum <= checkLimit; currentNum++)
       {
@@ -101,7 +97,7 @@ public class BestEducation
       {
         Console.WriteLine(1);
       }
-
+      
       var result = new SortedSet<int>(allPrimes);
 
       foreach (int item1 in allPrimes)
@@ -119,16 +115,16 @@ public class BestEducation
       }
 
       int[] primeAndTheirPowers = result.ToArray();
-      foreach (int item1 in primeAndTheirPowers)
-      {
-        foreach (int item2 in primeAndTheirPowers.Where(num => num > item1))
-        {
-          var permutation = item1 * item2;
-          if (permutation > valueLimit)
-            continue;
+			foreach (int item1 in primeAndTheirPowers)
+			{
+				foreach (int item2 in primeAndTheirPowers.Where(num => num > item1))
+				{
+					var permutation = item1 * item2;
+					if (permutation > valueLimit)
+						continue;
 
           result.Add(permutation);
-        }
+				}
       }
 
       return result.ToList();
