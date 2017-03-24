@@ -12,7 +12,7 @@ public class BestEducation2
     {
       var firstNumberWithMaximalFactors = 0;
       var maximalFactors = 0;
-			for (int currentNum = 20160; currentNum <= highestNumber; currentNum++)
+			for (int currentNum = 2; currentNum <= highestNumber; currentNum++)
       {
         var currentNumFactorsCount = CountFactors(currentNum);
 
@@ -25,7 +25,6 @@ public class BestEducation2
 
       var howManyTests = highestNumber - firstNumberWithMaximalFactors + 1;
       return howManyTests;
-
     }
 
     private int CountFactors(int number)

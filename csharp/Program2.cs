@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-public class BestEducation
+public class BestEducation3
 {
   public class Solution
   {
