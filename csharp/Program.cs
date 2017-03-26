@@ -21,9 +21,9 @@ public class BestEducation
       int highestNumber = ReadIntRow()[0];
       var howManyTests = Calculate(highestNumber);
 
-			int controlValue = new BestEducation2.Solution().Solve(highestNumber);
-			if (controlValue != howManyTests)
-				throw new NotImplementedException();
+			//int controlValue = new BestEducation2.Solution().Solve(highestNumber);
+			//if (controlValue != howManyTests)
+				//throw new NotImplementedException();
       
       output.WriteLine(howManyTests);
     }
