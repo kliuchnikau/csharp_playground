@@ -10,8 +10,9 @@ namespace nunit
     [Test]
     public void TestCase1()
     {
-      var input = @"11";
-      var output = @"6";
+			var input = @"2
+60 18000";
+      var output = @"1";
 
       var inputStream = new StringReader(input);
       var outputStream = new StringWriter();
@@ -25,8 +26,9 @@ namespace nunit
     [Test]
     public void TestCase2()
     {
-      var input = @"12";
-      var output = @"1";
+			var input = @"3
+10000 9000 8000";
+      var output = @"2";
 
 			var inputStream = new StringReader(input);
 			var outputStream = new StringWriter();

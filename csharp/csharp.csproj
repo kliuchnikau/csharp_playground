@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Solutions\Program1-7.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Solutions\" />
@@ -51,6 +50,8 @@
     <None Include="packages.config" />
     <None Include="Solutions\Program1-5.cs" />
     <None Include="Solutions\Program1-6.cs" />
+    <None Include="Solutions\Program1-7.cs" />
+    <None Include="Solutions\Program1-8.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
