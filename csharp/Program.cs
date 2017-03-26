@@ -30,17 +30,19 @@ public class BestEducation
 
     public int Calculate(int highestNumber)
     {
-      // 2 because it is dividable by 1 and by self
-			var memo = Enumerable.Repeat(2, highestNumber+1).ToList(); 
+			var memo = Enumerable.Repeat(1, highestNumber+1).ToList(); 
 			
-      //int checkLimit = (int)Math.Round(Math.Sqrt(highestNumber), 0);
-			int checkLimit = highestNumber / 2;
-			for (int currentNum = 2; currentNum <= checkLimit; currentNum++)
+      int checkLimit = (int)Math.Round(Math.Sqrt(highestNumber), 0);
+			
+      for (int currentPrime = 2; currentPrime <= checkLimit; currentPrime++)
 			{
-        for (int tryDivide = currentNum+1; tryDivide <= highestNumber; tryDivide++)
+        if (IsPrime(currentPrime, memo))
         {
-          if (tryDivide % currentNum == 0)
-						memo[tryDivide] += 1;
+          for (int multiplier = 1; multiplier <= highestNumber / currentPrime; multiplier++)
+          {
+            int testedNum = currentPrime * multiplier;
+            memo[testedNum] *= (PowerOfFactor(currentPrime, multiplier) + 1 + 1);
+          }
         }
  			}
 
@@ -57,6 +59,24 @@ public class BestEducation
 
 			var howManyTests = highestNumber - firstNumberWithMaximalFactors + 1;
       return howManyTests;
+    }
+
+    int PowerOfFactor(int currentPrime, int multiplier)
+    {
+      int result = 0;
+      int testedNum = multiplier;
+      while (testedNum % currentPrime == 0)
+      {
+        result += 1;
+        testedNum = testedNum / currentPrime;
+      }
+
+      return result;
+    }
+
+    bool IsPrime(int currentNum, List<int> memo)
+    {
+      return (memo[currentNum] == 1);
     }
 
     private int[] ReadIntRow()
