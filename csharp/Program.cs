@@ -20,18 +20,34 @@ public class BestEducation
     {
       int numCommands = ReadIntRow()[0];
 
-      var stack = new Queue<int>();
+      var queue = new Queue<int>();
+
+      int? currentMinimum = null;
 
       for (int i = 0; i < numCommands; i++)
       {
         var command = ReadStrRow();
         if (command[0] == "+")
         {
-          stack.Enqueue(int.Parse(command[1]));
+          int addVal = int.Parse(command[1]);
+          queue.Enqueue(addVal);
+
+          if (currentMinimum.HasValue && addVal < currentMinimum)
+            currentMinimum = addVal;
+        }
+        else if (command[0] == "-")
+        {
+          int removedElement = queue.Dequeue();
+
+          if (removedElement == currentMinimum)
+					  currentMinimum = null;
         }
         else
         {
-          output.WriteLine(stack.Dequeue());
+          if (!currentMinimum.HasValue)
+            currentMinimum = queue.Min();
+          
+          output.WriteLine(currentMinimum);
         }
       }
     }

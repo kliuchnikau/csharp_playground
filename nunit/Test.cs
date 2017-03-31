@@ -10,15 +10,21 @@ namespace nunit
     [Test]
     public void TestCase1()
     {
-			var input = @"6
+			var input = @"10
 + 1
 + 10
+?
 -
+?
 + 2
+?
 + 1234
--";
+-
+?";
 			var output = @"1
-10";
+10
+2
+2";
 
       var inputStream = new StringReader(input);
       var outputStream = new StringWriter();
