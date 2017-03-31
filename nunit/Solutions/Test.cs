@@ -17,8 +17,8 @@ namespace nunit
 + 2
 + 1234
 -";
-			var output = @"1
-10";
+			var output = @"10
+1234";
 
       var inputStream = new StringReader(input);
       var outputStream = new StringWriter();

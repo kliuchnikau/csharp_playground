@@ -20,18 +20,18 @@ public class BestEducation
     {
       int numCommands = ReadIntRow()[0];
 
-      var stack = new Queue<int>();
+      var stack = new Stack<int>();
 
       for (int i = 0; i < numCommands; i++)
       {
         var command = ReadStrRow();
         if (command[0] == "+")
         {
-          stack.Enqueue(int.Parse(command[1]));
+          stack.Push(int.Parse(command[1]));
         }
         else
         {
-          output.WriteLine(stack.Dequeue());
+          output.WriteLine(stack.Pop());
         }
       }
     }
