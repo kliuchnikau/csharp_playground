@@ -7,66 +7,36 @@ public class BestEducation
 {
   public class ClonableStack
   {
-    public long totalMass = 0;
+    public long totalMass;
+    public int parentIndex;
+    public int topElement;
 
-    private int? topElement = null;
-    private ClonableStack parent;
-    private int parentPopIndex;
+    private int thisIndex;
+    private List<ClonableStack> fullList;
 
-    public ClonableStack()
+    public ClonableStack(
+        List<ClonableStack> fullList,
+        int thisIndex = 0,
+        int parentIndex = 0,
+        int topElement = 0,
+        long totalMass = 0)
     {
-      parent = null;
-      parentPopIndex = 0;
-      totalMass = 0;
+      this.fullList = fullList;
+      this.thisIndex = thisIndex;
+      this.parentIndex = parentIndex;
+      this.topElement = topElement;
+      this.totalMass = totalMass;
     }
 
-    public ClonableStack(ClonableStack stackToClone)
+    public ClonableStack CloneAndPush(int val, int newIndex)
     {
-      parent = stackToClone;
-      parentPopIndex = stackToClone.LastIndex;
-      totalMass = stackToClone.totalMass;
+      long newTotalMass = this.totalMass + val;
+      return new ClonableStack(fullList, newIndex, thisIndex, val, newTotalMass);
     }
 
-    public ClonableStack Clone()
+    public ClonableStack CloneAndPop()
     {
-      return new ClonableStack(this);
-    }
-
-    public void Push(int val)
-    {
-      topElement = val;
-
-      totalMass += val;
-    }
-
-    public int Pop()
-    {
-      int poppedValue;
-
-      poppedValue = parent[parentPopIndex];
-      parentPopIndex--;
-
-      totalMass -= poppedValue;
-      return poppedValue;
-    }
-
-    public int LastIndex
-    {
-      get { return parentPopIndex + (topElement.HasValue ? 1 : 0 ); }
-    }
-
-    public int this[int index]
-    {
-      get {
-        if (index <= parentPopIndex)
-        {
-          return parent[index];
-        }
-        else
-        {
-          return topElement.Value;
-        }
-      }
+      return fullList[parentIndex];
     }
   }
 
@@ -86,23 +56,23 @@ public class BestEducation
       int numCommands = ReadIntRow()[0];
 
       var snowmans = new List<ClonableStack>();
-      snowmans.Add(new ClonableStack());
+      snowmans.Add(new ClonableStack(snowmans));
 
       long totalMass = 0;
-      for(int i = 0; i < numCommands; i++)
+      for(int i = 1; i <= numCommands; i++)
       {
         var command = ReadIntRow();
         var toCloneIndex = command[0];
+        var toCloneSnowman = snowmans[toCloneIndex];
 
-        var clone = new ClonableStack(snowmans[toCloneIndex]);
-
+        ClonableStack clone;
         switch (command[1])
         {
           case 0:
-            clone.Pop();
+            clone = toCloneSnowman.CloneAndPop();
             break;
           default:
-            clone.Push(command[1]);
+            clone = toCloneSnowman.CloneAndPush(command[1], i);
             break;
         }
 
