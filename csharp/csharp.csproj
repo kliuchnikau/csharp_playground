@@ -57,6 +57,7 @@
     <None Include="Solutions\Program2-3.cs" />
     <None Include="Solutions\Program2-4.cs" />
     <None Include="Solutions\Program2-5.cs" />
+    <None Include="Solutions\Program2-6.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
