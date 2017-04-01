@@ -9,9 +9,16 @@ public class BestEducation
   {
     public long totalMass = 0;
 
-    private List<int> internalList = new List<int>();
+    private int? topElement = null;
     private ClonableStack parent;
     private int parentPopIndex;
+
+    public ClonableStack()
+    {
+      parent = null;
+      parentPopIndex = 0;
+      totalMass = 0;
+    }
 
     public ClonableStack(ClonableStack stackToClone)
     {
@@ -27,7 +34,7 @@ public class BestEducation
 
     public void Push(int val)
     {
-      internalList.Add(val);
+      topElement = val;
 
       totalMass += val;
     }
@@ -36,16 +43,8 @@ public class BestEducation
     {
       int poppedValue;
 
-      if (internalList.Count > 0)
-      {
-        poppedValue = internalList.Last();
-        internalList.Add(internalList.Count - 1);
-      }
-      else
-      {
-        poppedValue = parent[parentPopIndex];
-        parentPopIndex--;
-      }
+      poppedValue = parent[parentPopIndex];
+      parentPopIndex--;
 
       totalMass -= poppedValue;
       return poppedValue;
@@ -53,19 +52,19 @@ public class BestEducation
 
     public int LastIndex
     {
-      get { return parentPopIndex + internalList.Count - 1; }
+      get { return parentPopIndex + (topElement.HasValue ? 1 : 0 ); }
     }
 
     public int this[int index]
     {
       get {
-        if (LastIndex - index <= parentPopIndex)
+        if (index <= parentPopIndex)
         {
           return parent[index];
         }
         else
         {
-          return internalList[index];
+          return topElement.Value;
         }
       }
     }
@@ -86,36 +85,30 @@ public class BestEducation
     {
       int numCommands = ReadIntRow()[0];
 
-      var snowmans = new List<List<int>>();
-      snowmans.Add(new List<int>());
+      var snowmans = new List<ClonableStack>();
+      snowmans.Add(new ClonableStack());
 
+      long totalMass = 0;
       for(int i = 0; i < numCommands; i++)
       {
         var command = ReadIntRow();
         var toCloneIndex = command[0];
 
-				var clone = new List<int>(snowmans[toCloneIndex]);
+        var clone = new ClonableStack(snowmans[toCloneIndex]);
 
         switch (command[1])
         {
           case 0:
-            clone.RemoveAt(clone.Count-1);
+            clone.Pop();
             break;
           default:
-            clone.Add(command[1]);
+            clone.Push(command[1]);
             break;
         }
 
-        snowmans.Add(clone);
-      }
+        totalMass += clone.totalMass;
 
-      long totalMass = 0;
-      foreach(var snowman in snowmans)
-      {
-        foreach(var snowball in snowman)
-        {
-          totalMass += snowball;
-        }
+        snowmans.Add(clone);
       }
 
       output.WriteLine(totalMass);
