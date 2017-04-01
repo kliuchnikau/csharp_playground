@@ -10,9 +10,16 @@ namespace nunit
     [Test]
     public void TestCase1()
     {
-			var input = @"7
-8 9 + 1 7 - *";
-			var output = @"-102";
+			var input = @"8
+0 1
+1 5
+2 4
+3 2
+4 3
+5 0
+6 6
+1 0";
+			var output = @"74";
 
       var inputStream = new StringReader(input);
       var outputStream = new StringWriter();
