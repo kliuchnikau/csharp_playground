@@ -5,41 +5,6 @@ using System.Linq;
 
 public class BestEducation
 {
-  public class ClonableStack
-  {
-    public long totalMass;
-    public int parentIndex;
-    public int topElement;
-
-    private int thisIndex;
-    private List<ClonableStack> fullList;
-
-    public ClonableStack(
-        List<ClonableStack> fullList,
-        int thisIndex = 0,
-        int parentIndex = 0,
-        int topElement = 0,
-        long totalMass = 0)
-    {
-      this.fullList = fullList;
-      this.thisIndex = thisIndex;
-      this.parentIndex = parentIndex;
-      this.topElement = topElement;
-      this.totalMass = totalMass;
-    }
-
-    public ClonableStack CloneAndPush(int val, int newIndex)
-    {
-      long newTotalMass = this.totalMass + val;
-      return new ClonableStack(fullList, newIndex, thisIndex, val, newTotalMass);
-    }
-
-    public ClonableStack CloneAndPop()
-    {
-      return fullList[parentIndex];
-    }
-  }
-
   public class Solution
   {
     private TextReader input;
@@ -53,35 +18,31 @@ public class BestEducation
 
     public void Solve()
     {
-      int numCommands = ReadIntRow()[0];
+      int numPassengers = ReadIntRow()[0];
+      var stackSizes = new List<int>();
 
-      var snowmans = new List<ClonableStack>();
-      snowmans.Add(new ClonableStack(snowmans));
+      var drinksAmount = ReadIntRow();
 
-      long totalMass = 0;
-      for(int i = 1; i <= numCommands; i++)
+      foreach(int drink in drinksAmount)
       {
-        var command = ReadIntRow();
-        var toCloneIndex = command[0];
-        var toCloneSnowman = snowmans[toCloneIndex];
-
-        ClonableStack clone;
-        switch (command[1])
+        if (drink > 0 || stackSizes.Count == 0)
         {
-          case 0:
-            clone = toCloneSnowman.CloneAndPop();
-            break;
-          default:
-            clone = toCloneSnowman.CloneAndPush(command[1], i);
-            break;
+          stackSizes.Insert(0, 1);
         }
-
-        totalMass += clone.totalMass;
-
-        snowmans.Add(clone);
+        else
+        {
+          int smallestStackSize = stackSizes[0];
+          int indexOfLastSmallest = 0;
+          while (indexOfLastSmallest < stackSizes.Count &&
+                 stackSizes[indexOfLastSmallest] == smallestStackSize)
+          {
+            indexOfLastSmallest++;
+          }
+          stackSizes[--indexOfLastSmallest]++;
+        }
       }
 
-      output.WriteLine(totalMass);
+      output.WriteLine(stackSizes.Last());
     }
 
     private List<int> ReadIntRow()
