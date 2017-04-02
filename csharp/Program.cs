@@ -20,6 +20,7 @@ public class BestEducation
     {
       int numPassengers = ReadIntRow()[0];
       var stackSizes = new List<int>();
+      int indexOfLastSmallest = -1;
 
       var drinksAmount = ReadIntRow();
 
@@ -27,18 +28,36 @@ public class BestEducation
       {
         if (drink > 0 || stackSizes.Count == 0)
         {
+					if (stackSizes.Count == 0 || stackSizes[indexOfLastSmallest] != 1)
+					{
+						indexOfLastSmallest = 0;
+					}
+					else
+					{
+						indexOfLastSmallest++;
+					}
+
           stackSizes.Insert(0, 1);
         }
         else
         {
-          int smallestStackSize = stackSizes[0];
-          int indexOfLastSmallest = 0;
-          while (indexOfLastSmallest < stackSizes.Count &&
-                 stackSizes[indexOfLastSmallest] == smallestStackSize)
+          stackSizes[indexOfLastSmallest]++;
+
+          if (indexOfLastSmallest > 0)
           {
-            indexOfLastSmallest++;
+            indexOfLastSmallest--;
           }
-          stackSizes[--indexOfLastSmallest]++;
+          else
+          {
+						int newIndexOfLastSmallest = indexOfLastSmallest + 1;
+            int currentMinValue = stackSizes[indexOfLastSmallest];
+            while (newIndexOfLastSmallest < stackSizes.Count &&
+                   stackSizes[newIndexOfLastSmallest] == currentMinValue)
+            {
+              newIndexOfLastSmallest++;
+            }
+            indexOfLastSmallest = newIndexOfLastSmallest - 1;
+          }
         }
       }
 
